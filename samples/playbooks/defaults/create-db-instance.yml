@@ -1,0 +1,11 @@
+---
+  db_user: oracledb
+  db_sid: FMWDB
+  db_global_name: FMWDB
+  db_template_name: General_Purpose.dbc
+  db_admin_password: welcome1
+  db_listener_port: 1521
+  db_auto_memory_mgnt: TRUE
+  db_memory_percentage: 80
+  db_memory_total: 1024
+  db_type: MULTIPURPOSE

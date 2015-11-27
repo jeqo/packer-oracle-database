@@ -1,0 +1,13 @@
+---
+- name: Oracle DB 11gR2U4 - Sample DB Instance
+  hosts: default
+  remote_user: vagrant
+  sudo: yes
+
+  vars_files:
+    - defaults/common.yml
+    - defaults/create-db-listener.yml
+    - defaults/create-db-instance.yml
+  tasks:
+    - include: tasks/create-db-instance.yml
+    - include: tasks/create-db-listener.yml

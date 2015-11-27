@@ -1,0 +1,14 @@
+---
+  - template: src=templates/dbca.rsp.j2 dest=/tmp/dbca.rsp
+    become: yes
+    become_user: "{{ db_user }}"
+  - name: Create Instance
+    command: "{{ oracle_home }}/bin/dbca -silent -responseFile /tmp/dbca.rsp"
+    become: yes
+    become_user: "{{ db_user }}"
+    args:
+      creates: "{{ oracle_home }}/dbs/spfile{{ db_sid }}.ora"
+  - name: Generate Start Server Upstart Script
+    template: src=templates/oradb.conf.j2 dest=/etc/init/oradb.conf
+  - name: Enable Service
+    service: name=oradb enabled=yes

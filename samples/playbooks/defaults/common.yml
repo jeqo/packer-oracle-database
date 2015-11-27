@@ -1,0 +1,3 @@
+---
+  db_user: oracledb
+  oracle_home: /home/oracledb/product/OracleHome
