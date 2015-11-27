@@ -1,0 +1,130 @@
+{
+  "variables": {
+    "base_vm_name": "oracle-linux-6",
+    "vm_name": "oracle-db-11g",
+    "version": "11.2.0.4.{{isotime \"20060102150405\"}}",
+    "user_home": "{{env `HOME`}}",
+
+    "oracle_user": "oracledb",
+
+    "db_install_dir": "/data/oracle-db",
+    "db_zip": "p13390677_112040_Linux-x86-64_1of7.zip",
+    "db_zip2": "p13390677_112040_Linux-x86-64_2of7.zip",
+
+    "user": "jeqo",
+    "atlas_token": ""
+  },
+
+  "builders": [{
+    "type": "docker",
+    "image": "oraclelinux:6.7",
+
+    "volumes": {
+      "{{pwd}}/data": "/data"
+    },
+
+    "commit": "true"
+  },
+
+  {
+    "type": "virtualbox-ovf",
+    "vm_name": "{{user `vm_name`}}",
+    "output_directory": "{{user `user_home`}}/boxes/{{user `vm_name`}}",
+    "source_path": "{{user `user_home`}}/boxes/{{user `base_vm_name`}}/{{user `base_vm_name`}}.ovf",
+
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_port": 22,
+    "ssh_wait_timeout": "10000s",
+
+    "headless": false,
+    "boot_wait": "12s",
+
+    "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
+  }],
+
+  "provisioners": [{
+    "type": "shell",
+    "only": ["virtualbox-ovf"],
+    "inline": "mkdir /data && chown -R 777 /data",
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+  },
+
+  {
+    "type": "file",
+    "only": ["virtualbox-ovf"],
+    "source": "{{pwd}}{{user `db_install_dir`}}/{{user `db_zip`}}",
+    "destination": "/tmp/{{user `db_zip`}}"
+  }, {
+    "type": "file",
+    "only": ["virtualbox-ovf"],
+    "source": "{{pwd}}{{user `db_install_dir`}}/{{user `db_zip2`}}",
+    "destination": "/tmp/{{user `db_zip2`}}"
+  }, {
+    "type": "shell",
+    "only": ["virtualbox-ovf"],
+    "inline": "mkdir {{user `db_install_dir`}} && mv /tmp/{{user `db_zip`}} {{user `db_install_dir`}}/. && mv /tmp/{{user `db_zip2`}} {{user `db_install_dir`}}/.",
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+  },
+
+  {
+    "type": "shell",
+    "scripts": [
+      "scripts/oracle-db/create-oracle-user.sh",
+      "scripts/oracle-db/install-db-11g.sh"
+    ],
+    "environment_vars": [
+      "OS_GROUP=oinstall",
+      "OS_USER={{user `oracle_user`}}",
+      "OS_DBA_GROUP=dba",
+      "ORACLE_BASE=/home/{{user `oracle_user`}}/product",
+      "ORACLE_HOME=/home/{{user `oracle_user`}}/product/OracleHome",
+      "ORACLE_INVENTORY=/home/{{user `oracle_user`}}/oracle_inventory",
+      "ORACLE_DB_EDITION=SE",
+      "DB_INSTALL_DIR={{user `db_install_dir`}}",
+      "DB_ZIP={{user `db_zip`}}",
+      "DB_ZIP2={{user `db_zip2`}}"
+    ],
+    "override": {
+      "virtualbox-ovf": {
+        "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+      }
+    }
+  },
+
+  {
+    "type": "shell",
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+    "only": ["virtualbox-ovf"],
+    "inline": ["rm -rf /data"]
+  }, {
+    "type": "shell",
+    "only": ["virtualbox-ovf"],
+    "scripts": [
+      "scripts/common/minimize.sh"
+    ],
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+  }],
+
+
+  "post-processors": [
+    [{
+      "type": "vagrant",
+      "only": ["virtualbox-ovf"],
+      "output": "build/{{user `vm_name`}}/{{user `vm_name`}}.box",
+      "compression_level": 9,
+      "keep_input_artifact": true
+    }, {
+      "type": "atlas",
+      "only": ["virtualbox-ovf"],
+      "token": "{{user `atlas_token`}}",
+      "artifact": "{{user `user`}}/oracle-db-11g",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "provider": "virtualbox",
+        "version": "{{user `version`}}"
+      }
+    }]
+  ]
+}
