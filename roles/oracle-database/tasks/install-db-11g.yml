@@ -31,35 +31,6 @@
   with_items: "{{ installers_11_2_0_4 }}"
   when: release == '11.2.0.4'
 
-- name: "create {{ item }} group"
-  group: "name={{ item }} state=present"
-  with_items:
-    - "{{ os_group }}"
-    - "{{ os_dba_group }}"
-- name: Create User
-  user:
-    name: "{{ os_user }}"
-    shell: /bin/bash
-    group: "{{ os_group }}"
-    groups: "{{ os_dba_group }}"
-    append: yes
-
-- name: config limits.conf
-  lineinfile:
-    dest: /etc/security/limits.conf
-    state: present
-    insertbefore: "# End of file"
-    line: "{{ item }}"
-  with_items:
-    - "{{ os_user }}             soft    nproc          16384"
-    - "{{ os_user }}             hard    nproc          16384"
-    - "{{ os_user }}             soft    nofile         65536"
-    - "{{ os_user }}             hard    nofile         65536"
-
-# Check support in Docker
-# - sysctl: name=net.core.rmem_max value=4192608 state=present
-# - sysctl: name=net.core.wmem_max value=4192608 state=present
-
 - name: install pre-installation package
   yum: name=oracle-rdbms-server-11gR2-preinstall
 
@@ -74,16 +45,12 @@
     - "{{ oracle_home }}"
 
 - name: preparing database installation template
-  template: src=../templates/db-install.rsp.j2 dest=/tmp/db-install.rsp
+  template: src=db-install-11g.rsp.j2 dest=/tmp/db-install.rsp
   become: yes
   become_user: "{{ os_user }}"
 
 - name: update required pre-requisites
-  lineinfile:
-    dest: /tmp/database/stage/cvu/cvu_prereq.xml
-    state: present
-    regexp: "^<RUNLEVEL>"
-    line: '<RUNLEVEL SEVERITY=\"IGNORABLE\">'
+  shell: "sed -i -e 's/<RUNLEVEL>/<RUNLEVEL SEVERITY=\"IGNORABLE\">/g' /tmp/database/stage/cvu/cvu_prereq.xml"
 
 - name: run installer
   shell: "/tmp/database/runInstaller -silent -waitforcompletion -ignoreSysPrereqs -responseFile /tmp/db-install.rsp"

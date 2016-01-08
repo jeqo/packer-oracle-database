@@ -4,6 +4,6 @@
 
   roles:
     - role: oracle-database
-      os_user: oracledb
       version: 11g
       release: 11.2.0.4
+      edition: SE
