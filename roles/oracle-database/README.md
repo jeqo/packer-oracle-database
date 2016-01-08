@@ -6,7 +6,7 @@ Ansible Role to install and configure Oracle Database.
 Requirements
 ------------
 
-None.
+Download installers defined in *files* directory depending on your [release].
 
 Role Variables
 --------------
