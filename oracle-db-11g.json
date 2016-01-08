@@ -46,14 +46,21 @@
         "extra_arguments": "-s -u vagrant"
       }
     }
+  }, {
+    "type": "shell",
 
+    "only": ["virtualbox"],
+
+    "inline": [
+      "dd if=/dev/zero of=/EMPTY bs=1M",
+      "rm -f /EMPTY"
+    ],
+
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
   }, {
     "type": "shell",
     "inline": [
-      "dd if=/dev/zero of=/EMPTY bs=1M",
-      "rm -f /EMPTY",
-      "rm -rf /tmp/*",
-      "sync"
+      "rm -rf /var/lib/yum/history/* /tmp/* /var/tmp/*"
     ],
     "override": {
       "virtualbox": {
