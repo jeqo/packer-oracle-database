@@ -1,6 +1,8 @@
 {
+  "description": "oracle database 11g packer template",
+  "_comment": "before running this template, use: pre-build script and download required installers files.",
   "variables": {
-    "name": "oracle-db-11g",
+    "name": "oracle-database-11g",
     "base_name": "oracle-linux-6",
 
     "user_home": "{{env `HOME`}}",

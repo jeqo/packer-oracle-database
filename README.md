@@ -38,6 +38,17 @@ Versions
 Directory Structure
 -------------------
 
-- roles: Ansible Roles.
-
 - samples: Usage samples.
+
+Before Run
+----------
+
+Install Ansible Roles
+
+```bash
+ansible-galaxy install -f -p ./roles -r ansible_roles.yml
+```
+
+Download required installers, depending on your version and releases:
+
+- /roles/[role_name]/files/[file_name].download

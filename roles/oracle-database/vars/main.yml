@@ -1,11 +1,11 @@
 ---
 # vars file for oracle-database
-os_user: oracle
-os_group: oinstall
-os_dba_group: dba
+# oracle_database_os_user: oracle
+# oracle_database_os_group: oinstall
+# oracle_database_os_dba_group: dba
 
-inventory_location: "/home/{{ os_user }}/oracle_inventory"
-oracle_base: "/home/{{ os_user }}/product"
+inventory_location: "/home/oracle/oracle_inventory"
+oracle_base: "/home/oracle/product"
 oracle_home: "{{ oracle_base }}/oracle_home"
 
 installers_11_2_0_4:
