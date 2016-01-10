@@ -1,5 +1,5 @@
 ---
-  db_user: oracledb
+  db_user: oracle
   db_sid: FMWDB
   db_global_name: FMWDB
   db_template_name: General_Purpose.dbc

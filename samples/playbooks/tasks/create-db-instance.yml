@@ -12,3 +12,9 @@
     template: src=templates/oradb.conf.j2 dest=/etc/init/oradb.conf
   - name: Enable Service
     service: name=oradb enabled=yes
+  - name: Setting Environmental Variables
+    template: src=templates/bash_profile.j2 dest=/home/{{ db_user }}/.bash_profile
+    become: yes
+    become_user: "{{ db_user }}"
+  - name: Setting Environmental Variables
+    template: src=templates/oratab.j2 dest=/etc/oratab owner={{ db_user }} group={{ db_install_group }}

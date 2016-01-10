@@ -1,3 +1,5 @@
 ---
-  db_user: oracledb
-  oracle_home: /home/oracledb/product/OracleHome
+  db_user: oracle
+  db_install_group: oinstall
+  oracle_home: /home/{{ db_user }}/product/Oracle_Home
+  db_schema_prefix: DEV
