@@ -1,5 +1,0 @@
----
-  db_user: oracle
-  db_install_group: oinstall
-  oracle_home: /home/{{ db_user }}/product/oracle_home
-  db_schema_prefix: DEV

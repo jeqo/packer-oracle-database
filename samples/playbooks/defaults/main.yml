@@ -1,0 +1,14 @@
+---
+  oracle_home: /home/oracle/product/oracle_home
+  db_install_group: oinstall
+  db_sid: SAMPLEDB
+  db_global_name: SAMPLEDB
+  db_template_name: General_Purpose.dbc
+  db_admin_password: welcome1
+  db_auto_memory_mgnt: TRUE
+  db_memory_percentage: 80
+  db_memory_total: 1024
+  db_type: MULTIPURPOSE
+  db_listener_name: LISTENER
+  db_listener_port: 1521
+  db_init_params: JAVA_JIT_ENABLED=FALSE
