@@ -91,7 +91,8 @@
       "metadata": {
         "created_at": "{{timestamp}}",
         "provider": "virtualbox",
-        "version": "{{user `version`}}.{{user `timestamp`}}"
+        "version": "{{user `version`}}.{{user `timestamp`}}",
+        "os": "oracle-linux-6"
       }
     }], [{
       "type": "docker-tag",
@@ -99,7 +100,22 @@
       "only": ["docker"],
 
       "repository": "{{user `docker_user`}}/{{user `name`}}",
+      "tag": "{{user `version`}}.ol6.{{user `timestamp`}}"
+    },{
+      "type": "docker-tag",
+
+      "only": ["docker"],
+
+      "repository": "{{user `docker_user`}}/{{user `name`}}",
       "tag": "{{user `version`}}.{{user `timestamp`}}"
+    },{
+      "type": "docker-tag",
+
+      "only": ["docker"],
+
+      "repository": "{{user `docker_user`}}/{{user `name`}}",
+      "tag": "{{user `version`}}.ol6",
+      "force": true
     },{
       "type": "docker-tag",
 
