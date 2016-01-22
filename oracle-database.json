@@ -17,7 +17,10 @@
     "atlas_token": "{{env `ATLAS_TOKEN`}}",
 
     "version": "",
-    "timestamp": "{{isotime \"20060102150405\"}}"
+    "timestamp": "{{isotime \"20060102150405\"}}",
+
+    "include_tags": "",
+    "exclude_tags": ""
   },
 
   "builders": [{
@@ -50,10 +53,10 @@
     "role_paths": ["{{template_dir}}/roles/oracle-database"],
     "override": {
       "virtualbox": {
-        "extra_arguments": "-s -u vagrant --tags 'install' --skip-tags 'create_instance'"
+        "extra_arguments": "-s -u vagrant --tags '{{user `ìnclude_tags`}}' --skip-tags '{{user `exclude_tags`}}'"
       },
       "docker": {
-        "extra_arguments": " --tags 'install' --skip-tags 'create_instance,configure_service'"
+        "extra_arguments": " --tags '{{user `ìnclude_tags`}}' --skip-tags '{{user `exclude_tags`}},configure_service'"
       }
     }
   }, {
