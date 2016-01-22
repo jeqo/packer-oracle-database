@@ -25,9 +25,7 @@ _virtualBox provider_.
 versions
 --------
 
-- **oracle-database-se-11g-ol7**
-
-image with oracle database 11.2.0.4 standard edition installed in oracle linux 7. 
+- **oracle-database-se-11g-ol7**: image with oracle database 11g standard edition installed in oracle linux 7. *(current version: 11.2.0.4)*
 
   - atlas: [https://atlas.hashicorp.com/jeqo/boxes/oracle-database-se-11g-ol7](https://atlas.hashicorp.com/jeqo/boxes/oracle-database-se-11g-ol7)
 
