@@ -1,59 +1,43 @@
-Oracle Database Provisioning
+oracle database provisioning
 ============================
 
-Oracle Database Provisioning repository based on the following tools:
+with packer and ansible.
 
-- [Packer](https://packer.io/): Machine/Container image builder
-
-- [Ansible](http://www.ansible.com/): Automation tool to provision configurations.
-
-Builders
+builders
 --------
 
-Images are built by Packer using the following virtualization platforms:
+images are built by _packer_ using the following virtualization platforms:
 
-- [VirtualBox](http://virtualbox.org/)
+- [virtualBox](http://virtualbox.org/)
 
-- [Docker](http://docker.com/)
+- [docker](http://docker.com/)
 
-Images Repositories
--------------------
+image repositories
+------------------
 
-Images are pushed to the following repositories:
+images are pushed to the following repositories:
 
-- [Atlas](http://atlas.hashicorp.com/): Here are stored Vagrant Boxes using
-VirtualBox provider.
+- [atlas](http://atlas.hashicorp.com/): stores vagrant boxes using
+_virtualBox provider_.
 
-- [Docker Hub](https://hub.docker.com/): Here are stored Docker images.
+- [docker hub](https://hub.docker.com/): stores docker images.
 
-Versions
+versions
 --------
 
-- **oracle-database-11g**
+- **oracle-database-11g-se-ol7**: image with oracle database 11g standard edition installed in oracle linux 7. *(current version: 11.2.0.4)*
 
-  - Atlas: [https://atlas.hashicorp.com/jeqo/boxes/oracle-database-11g](https://atlas.hashicorp.com/jeqo/boxes/oracle-database-11g)
+  - atlas: [https://atlas.hashicorp.com/jeqo/boxes/oracle-database-11g-se-ol7](https://atlas.hashicorp.com/jeqo/boxes/oracle-database-11g-se-ol7)
 
-  - Docker Hub: [https://hub.docker.com/r/jeqo/oracle-database-11g/](https://hub.docker.com/r/jeqo/oracle-database-11g/)
+  - docker hub: [https://hub.docker.com/r/jeqo/oracle-database-11g-se-ol7/](https://hub.docker.com/r/jeqo/oracle-database-11g-se-ol7/)
 
-Directory Structure
--------------------
+provisioning
+------------
 
-- samples: Usage samples.
+oracle database installation is provided by the following ansible roles:
 
-Before Run
-----------
+- [oracle-database](https://galaxy.ansible.com/detail#/role/7146)
 
-Install Ansible Roles
-```bash
-./install_ansible_roles.sh
-```
+**important**
 
-or
-
-```bash
-ansible-galaxy install -f -p ./roles -r ansible_roles.yml
-```
-
-**IMPORTANT**: Download required installers, depending on your version and releases:
-
-- /roles/[role_name]/files/[file_name].download
+this images are generated only for development. for more information visit: [sysco.no](http://sysco.no)
