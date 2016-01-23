@@ -5,11 +5,34 @@
     var_file: oracle-database-11g-ol7.json
 
   vars_prompt:
+    - name: "providers"
+      prompt: "providers? (virtualbox,docker,aws)"
+      default:
+      private: no
+    - name: "debug"
+      prompt: "debug? (true or false)"
+      default: no
+      private: no
+
     - name: "database_edition"
       prompt: "oracle database edition ('ee' or 'se')"
       default: "se"
 
   tasks:
+    - set_fact:
+        only_providers: -only={{ providers }}
+      when: providers is defined and providers != ""
+
+    - set_fact:
+        debug_text: "-debug=true"
+      when: debug | bool
+
+    - set_fact:
+        debug_text: "-debug=false"
+      when: not debug | bool
+
+    - set_fact:
+        variables: oracle-database-11g-{{ database_edition }}-ol7.json
 
     - shell: "ansible-galaxy install -f -p roles -r roles.yml"
 
@@ -21,4 +44,4 @@
         - "{{ ansible_env.HOME }}/oracle/database/installers/11.2.0.4/oracle_database-11.2.0.4-1of2.zip"
         - "{{ ansible_env.HOME }}/oracle/database/installers/11.2.0.4/oracle_database-11.2.0.4-2of2.zip"
 
-    - shell: "packer build -var-file=oracle-database-11g-{{ database_edition }}-ol7.json -force=true oracle-database.json > build.log"
+    - shell: "packer build -var-file={{ variables }} -force=true {{ debug_text }} {{ only_providers }} oracle-database.json >> build.log"
