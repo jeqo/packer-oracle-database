@@ -3,7 +3,7 @@
   "os": "ol7",
 
   "image_name": "oracle-database-11g-se-ol7",
-  "base_image_name": "ol7-ansible",
+  "base_image_name": "ansible-ol7",
 
   "docker_user": "jeqo",
   "atlas_user": "jeqo",
