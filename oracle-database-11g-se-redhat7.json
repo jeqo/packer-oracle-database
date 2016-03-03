@@ -1,0 +1,12 @@
+{
+  "image_name": "",
+
+  "aws_source_ami": "ami-54b9803e",
+  "aws_username": "ec2-user",
+
+  "ansible_playbook_file": "oracle-database-11g-se.yml",
+
+  "atlas_user": "sysco",
+
+  "version": "11.2.0.4"
+}

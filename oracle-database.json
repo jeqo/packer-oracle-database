@@ -1,15 +1,17 @@
 {
   "description": "oracle database packer template",
-  "_comment": "before running this template, use: pre-build script and download required installers files.",
 
   "variables": {
-    "name": "",
-    "os": "",
-
     "image_name": "",
-    "base_image_name": "",
 
-    "user_home": "{{env `HOME`}}",
+    "vagrant_output_directory": "build",
+    "vagrant_source_path": "",
+    "vagrant_headless": "false",
+
+    "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_KEY`}}",
+    "aws_source_ami": "",
+    "aws_username": "",
 
     "docker_user": "",
 
@@ -25,35 +27,49 @@
     "type": "virtualbox-ovf",
 
     "vm_name": "{{user `image_name`}}",
-    "output_directory": "{{user `user_home`}}/boxes/{{user `atlas_user`}}/{{user `image_name`}}",
-    "source_path": "{{user `user_home`}}/boxes/{{user `atlas_user`}}/{{user `base_image_name`}}/{{user `base_image_name`}}.ovf",
+    "output_directory": "{{user `vagrant_output_directory`}}",
+    "source_path": "{{user `vagrant_source_path`}}",
 
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "ssh_port": 22,
     "ssh_wait_timeout": "10000s",
 
-    "headless": false,
+    "headless": "{{user `vagrant_headless`}}",
     "boot_wait": "12s",
 
     "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
   },{
+    "name": "aws",
+    "type": "amazon-ebs",
+
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+
+    "region": "us-east-1",
+    "source_ami": "{{user `aws_source_ami`}}",
+    "instance_type": "t2.small",
+    "ssh_username": "{{user `aws_username`}}",
+    "ami_name": "{{user `image_name`}} {{timestamp}}",
+
+    "ssh_pty" : true
+  },{
     "type": "docker",
 
-    "image": "{{user `docker_user`}}/{{user `base_image_name`}}",
+    "image": "{{user `docker_source_image`}}",
     "commit": "true"
   }],
 
   "provisioners": [{
     "type": "ansible-local",
-    "playbook_file": "{{user `name`}}.yml",
-    "role_paths": ["{{template_dir}}/roles/oracle-database"],
+    "playbook_file": "{{user `ansible_playbook_file`}}",
+    "role_paths": [
+      "{{template_dir}}/roles/nfs",
+      "{{template_dir}}/roles/oracle-database"
+    ],
     "override": {
       "virtualbox": {
-        "extra_arguments": "-s -u vagrant --tags 'installdatabase'"
-      },
-      "docker": {
-        "extra_arguments": " --tags 'installdatabase'"
+        "extra_arguments": "-s -u vagrant"
       }
     }
   }, {
@@ -75,18 +91,34 @@
     "override": {
       "virtualbox": {
         "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+      },
+      "aws": {
+        "execute_command": "{{.Vars}} sudo -S -E bash '{{.Path}}'"
       }
     }
   }],
 
   "post-processors": [
     [{
+      "type": "atlas",
+
+      "only": ["aws"],
+
+      "token": "{{user `atlas_token`}}",
+
+      "artifact": "{{user `atlas_user`}}/{{user `image_name`}}",
+      "artifact_type": "amazon.image",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "version": "{{user `version`}}.{{user `timestamp`}}"
+      }
+    },{
       "type": "vagrant",
 
       "only": ["virtualbox"],
 
-      "output": "{{user `user_home`}}/boxes/{{user `atlas_user`}}/{{user `image_name`}}/{{user `image_name`}}.box",
-      "compression_level": 9,
+      "output": "{{user `vagrant_output_path`}}",
+      "compression_level": 6,
       "keep_input_artifact": true
     }, {
       "type": "atlas",
