@@ -1,5 +1,5 @@
 {
-  "image_name": "",
+  "image_name": "oracle-database-11g-se-redhat7",
 
   "aws_source_ami": "ami-54b9803e",
   "aws_username": "ec2-user",
